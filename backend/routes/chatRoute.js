@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const { getChatList } = require('../controller/message.controller');
-const authMiddleware = require('../middleware/authMiddleware').authMiddleware;
+const authenticateToken = require('../middleware/authMiddleware');
 
-router.get('/chatList', getChatList);
+router.get('/chatList', authenticateToken, getChatList);
 
 module.exports = router;

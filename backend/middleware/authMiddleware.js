@@ -1,19 +1,23 @@
-// const jwt = require('jsonwebtoken');
+const jwt = require('jsonwebtoken');
+const { User } = require('../models/register.model');
+const SECRET_KEY = process.env.SECRET_KEY || 'Whatever';
 
-// module.exports.authMiddleware = async (req, res, next) => {
-//   const authToken = req.cookies ? req.cookies.authToken : null;
-//   try {
-//     if (authToken) {
-//       const deCodeToken = await jwt.verify(authToken, process.env.SECRET_KEY);
+const authenticateToken = async (req, res, next) => {
+  const token = req.headers['authorization']?.split(' ')[1];
 
-//       req.myId = deCodeToken.id;
+  if (!token) {
+    return res
+      .status(401)
+      .send({ errorMessage: 'Access denied. No token provided.' });
+  }
 
-//       next();
-//     } else {
-//       res.status(401).send({ errorMessage: 'No token provided' });
-//     }
-//   } catch (error) {
-//     console.log(error);
-//     res.status(401).send({ errorMessage: 'Unauthorized' });
-//   }
-// };
+  try {
+    const decoded = jwt.verify(token, SECRET_KEY);
+    req.user = await User.findById(decoded._id).select('-password');
+    next();
+  } catch (error) {
+    res.status(400).send({ errorMessage: 'Invalid token.' });
+  }
+};
+
+module.exports = authenticateToken;

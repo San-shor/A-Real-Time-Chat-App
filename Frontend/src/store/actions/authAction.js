@@ -9,7 +9,7 @@ export const userRegister = (data) => {
       const response = await axios.post(`${URL}/user-register`, data);
       console.log(response.data);
 
-      localStorage.setItem('authToken', response.data.token);
+      localStorage.setItem('authToken', response.data.userInfo.token);
       dispatch(success(response.data));
     } catch (err) {
       console.log(error);
@@ -28,10 +28,24 @@ export const userLogin = (data) => {
     try {
       const response = await axios.post(`${URL}/user-login`, data, config);
 
-      localStorage.setItem('authToken', response.data.token);
+      localStorage.setItem('authToken', response.data.userInfo.token);
       dispatch(success(response.data));
     } catch (err) {
       dispatch(error({ errorMessage: err }));
     }
   };
 };
+
+// Add a request interceptor
+axios.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('authToken');
+    if (token) {
+      config.headers['Authorization'] = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
