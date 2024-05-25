@@ -1,0 +1,15 @@
+.sentMessage {
+  display: flex;
+  flex-direction: row-reverse;
+  margin-bottom: 16px;
+}
+
+.receivedMessage {
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 16px;
+}
+
+.messageContainer {
+  max-width: 70%;
+}

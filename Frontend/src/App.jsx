@@ -1,35 +1,49 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import Login from './components/Login';
+import Register from './components/Register';
+import { Snackbar, Alert } from '@mui/material';
+import { useDispatch, useSelector } from 'react-redux';
+import { setSnackbar } from './store/reducers/authReducer';
+import ChatView from './components/Chat/ChatView';
+const router = createBrowserRouter([
+  {
+    path: '/',
+    element: <ChatView />,
+  },
+  {
+    path: '/signin',
+    element: <Login />,
+  },
+  {
+    path: '/signup',
+    element: <Register />,
+  },
+]);
 
 function App() {
-  const [count, setCount] = useState(0)
+  const dispatch = useDispatch();
+  const { successMessage, snackbarOpen } = useSelector((state) => state.auth);
 
+  const handleClose = () => {
+    dispatch(setSnackbar(false));
+  };
   return (
     <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <RouterProvider router={router} />
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleClose}>
+        <Alert
+          onClose={handleClose}
+          severity='success'
+          variant='filled'
+          sx={{ width: '100%' }}>
+          {successMessage}
+        </Alert>
+      </Snackbar>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
