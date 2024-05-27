@@ -2,7 +2,11 @@ import { TextField, IconButton, Popover, Box } from '@mui/material';
 import { BsSend, BsEmojiSmile } from 'react-icons/bs';
 import { FcStackOfPhotos } from 'react-icons/fc';
 import { useEffect, useState } from 'react';
-import { messageSend, fetchMessages } from '../../../store/actions/chatAction';
+import {
+  messageSend,
+  fetchMessages,
+  imageMessageSend,
+} from '../../../store/actions/chatAction';
 import { useDispatch, useSelector } from 'react-redux';
 import EmojiPicker from 'emoji-picker-react';
 
@@ -36,8 +40,20 @@ const MessageSend = () => {
   };
 
   const sentEmonji = (emoji) => {
-    console.log(emoji.emoji);
     setNewMessage(newMessage + emoji.emoji);
+  };
+
+  const sentImage = (e) => {
+    const formData = new FormData();
+    formData.append('senderName', user.userInfo.username);
+    formData.append('receiverId', currentFriend._id);
+    formData.append('image', e.target.files[0]);
+    dispatch(imageMessageSend(formData));
+    setNewMessage(null);
+  };
+
+  const handleImageClick = () => {
+    document.getElementById('image-upload').click();
   };
 
   useEffect(() => {
@@ -66,7 +82,13 @@ const MessageSend = () => {
               <IconButton aria-label='send' onClick={sendMessage}>
                 <BsSend />
               </IconButton>
-              <IconButton aria-label='photo'>
+              <IconButton aria-label='photo' onClick={handleImageClick}>
+                <input
+                  type='file'
+                  id='image-upload'
+                  style={{ display: 'none' }}
+                  onChange={sentImage}
+                />
                 <FcStackOfPhotos />
               </IconButton>
             </>

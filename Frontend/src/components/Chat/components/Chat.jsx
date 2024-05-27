@@ -7,6 +7,7 @@ const Chat = () => {
   const { messages } = useSelector((state) => state.chat);
   const { user } = useSelector((state) => state.auth);
   const { currentFriend } = useSelector((state) => state.chat);
+  console.log(messages);
 
   const scrollRef = useRef();
 
@@ -40,14 +41,21 @@ const Chat = () => {
                   flexDirection: 'column',
                   alignItems: 'flex-end',
                 }}>
-                <Typography variant='body2'>{m.message.text}</Typography>
+                {m.message.text === '' ? (
+                  <img
+                    src={`http://localhost:5000/${m.message.image}`}
+                    style={{ maxWidth: '250px', maxHeight: '250px' }}
+                  />
+                ) : (
+                  <Typography variant='body2'>{m.message.text}</Typography>
+                )}
+
                 <Typography variant='body2' color='textSecondary'>
                   You, {new Date(m.createdAt).toLocaleTimeString()}
                 </Typography>
               </Box>
               <Avatar
-                alt='You'
-                src={m.message.image}
+                src={`http://localhost:5000/${user.userInfo.image}`}
                 sx={{ ml: 2, alignSelf: 'flex-start' }}
               />
             </Box>

@@ -32,7 +32,36 @@ const sendMessage = async (req, res) => {
       },
     });
     await newMessage.save();
-    console.log('Message saved:', newMessage);
+
+    res.status(201).send(newMessage);
+  } catch (error) {
+    res.status(500).send({ error: 'Internal server error' });
+  }
+};
+
+const sendImageMessage = async (req, res) => {
+  const { senderName, receiverId, message } = req.body;
+  const senderId = req.user._id;
+
+  try {
+    console.log('Incoming data:', {
+      senderId,
+      senderName,
+      receiverId,
+      message,
+    });
+    const newMessage = new MessageDB({
+      senderId,
+      senderName,
+      receiverId,
+      message: {
+        text: '',
+        image: req.file.path,
+      },
+    });
+    await newMessage.save();
+    console.log({ newMessage });
+
     res.status(201).send(newMessage);
   } catch (error) {
     res.status(500).send({ error: 'Internal server error' });
@@ -57,4 +86,4 @@ const getMessage = async (req, res) => {
     res.status(500).send({ error: 'Internal server error' });
   }
 };
-module.exports = { getChatList, sendMessage, getMessage };
+module.exports = { getChatList, sendMessage, getMessage, sendImageMessage };

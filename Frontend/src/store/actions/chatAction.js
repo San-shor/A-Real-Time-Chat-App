@@ -14,6 +14,16 @@ export const getChatList = () => async (dispatch) => {
 export const messageSend = (data) => async (dispatch) => {
   try {
     const response = await axios.post(`${URL}/sendMessage`, data);
+
+    dispatch(addMessages(response.data));
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const imageMessageSend = (data) => async (dispatch) => {
+  try {
+    const response = await axios.post(`${URL}/sendImageMessage`, data);
     console.log(response.data);
     dispatch(addMessages(response.data));
   } catch (error) {
@@ -24,7 +34,7 @@ export const messageSend = (data) => async (dispatch) => {
 export const fetchMessages = (id) => async (dispatch) => {
   try {
     const response = await axios.get(`${URL}/getMessage/${id}`);
-    console.log(response.data);
+
     dispatch(setMessages(response.data.messages));
   } catch (error) {
     console.error('Error fetching messages:', error);
