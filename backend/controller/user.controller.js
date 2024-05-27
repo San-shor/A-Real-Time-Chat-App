@@ -55,6 +55,7 @@ const userLogin = async (req, res) => {
       SECRET_KEY
     );
     const userInfo = {
+      id: user._id,
       email: user.email,
       username: user.userName,
       image: user.image,

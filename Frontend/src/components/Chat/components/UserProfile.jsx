@@ -13,13 +13,13 @@ import ChatList from './ChatList';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
 import { getChatList } from '../../../store/actions/chatAction';
+import { setCurrentFriend } from '../../../store/reducers/chatReducer';
 
 const UserProfile = () => {
   const dispatch = useDispatch();
 
   const { chatList } = useSelector((state) => state.chat);
   const { user } = useSelector((state) => state.auth);
-  console.log(user.userInfo.image);
 
   useEffect(() => {
     dispatch(getChatList());
@@ -58,7 +58,11 @@ const UserProfile = () => {
         <ActivePeople />
         {chatList.friends && chatList.friends.length > 0 ? (
           chatList.friends.map((friend) => (
-            <ChatList key={friend._id} friend={friend} />
+            <div
+              key={friend._id}
+              onClick={() => dispatch(setCurrentFriend(friend))}>
+              <ChatList friend={friend} />
+            </div>
           ))
         ) : (
           <></>

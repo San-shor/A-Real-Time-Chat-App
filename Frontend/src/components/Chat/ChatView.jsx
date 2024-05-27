@@ -5,6 +5,7 @@ import Chat from './components/Chat';
 import MessageSend from './components/MessageSend';
 
 const ChatView = () => {
+  console.log('login');
   return (
     <Container>
       <Grid container spacing={5}>
