@@ -1,5 +1,5 @@
-import { TextField, IconButton, Popover, Box } from '@mui/material';
-import { BsSend, BsEmojiSmile } from 'react-icons/bs';
+import { TextField, IconButton, Popover, Box, Avatar } from '@mui/material';
+import { BsSend, BsEmojiSmile, BsXCircle } from 'react-icons/bs';
 import { FcStackOfPhotos } from 'react-icons/fc';
 import { useEffect, useState } from 'react';
 import {
@@ -14,6 +14,7 @@ const MessageSend = () => {
   const dispatch = useDispatch();
 
   const [newMessage, setNewMessage] = useState('');
+  const [selectedImage, setSelectedImage] = useState(null);
 
   const { user } = useSelector((state) => state.auth);
 
@@ -26,12 +27,21 @@ const MessageSend = () => {
 
   const sendMessage = (e) => {
     e.preventDefault();
-    const data = {
-      senderName: user.userInfo.username,
-      receiverId: currentFriend._id,
-      message: newMessage,
-    };
-    dispatch(messageSend(data));
+    if (selectedImage) {
+      const formData = new FormData();
+      formData.append('senderName', user.userInfo.username);
+      formData.append('receiverId', currentFriend._id);
+      formData.append('image', selectedImage);
+      dispatch(imageMessageSend(formData));
+      setSelectedImage(null);
+    } else {
+      const data = {
+        senderName: user.userInfo.username,
+        receiverId: currentFriend._id,
+        message: newMessage,
+      };
+      dispatch(messageSend(data));
+    }
     setNewMessage('');
   };
 
@@ -43,17 +53,20 @@ const MessageSend = () => {
     setNewMessage(newMessage + emoji.emoji);
   };
 
-  const sentImage = (e) => {
-    const formData = new FormData();
-    formData.append('senderName', user.userInfo.username);
-    formData.append('receiverId', currentFriend._id);
-    formData.append('image', e.target.files[0]);
-    dispatch(imageMessageSend(formData));
-    setNewMessage(null);
-  };
+  // const sentImage = (e) => {
+  //   const formData = new FormData();
+  //   formData.append('senderName', user.userInfo.username);
+  //   formData.append('receiverId', currentFriend._id);
+  //   formData.append('image', e.target.files[0]);
+  //   dispatch(imageMessageSend(formData));
+  //   setNewMessage(null);
+  // };
 
   const handleImageClick = () => {
     document.getElementById('image-upload').click();
+  };
+  const removeSelectedImage = () => {
+    setSelectedImage(null);
   };
 
   useEffect(() => {
@@ -73,9 +86,36 @@ const MessageSend = () => {
         value={newMessage}
         InputProps={{
           startAdornment: (
-            <IconButton aria-label='send' onClick={handleEmojiOpen}>
-              <BsEmojiSmile />
-            </IconButton>
+            <>
+              <IconButton aria-label='send' onClick={handleEmojiOpen}>
+                <BsEmojiSmile />
+              </IconButton>
+              {selectedImage && (
+                <Box position='relative' display='inline-block'>
+                  <Avatar
+                    src={URL.createObjectURL(selectedImage)}
+                    variant='square'
+                    sx={{ width: 150, height: 150 }}
+                  />
+                  <IconButton
+                    aria-label='remove'
+                    onClick={removeSelectedImage}
+                    sx={{
+                      position: 'absolute',
+                      top: -1,
+                      right: -10,
+                      backgroundColor: 'white',
+                      padding: '2px',
+                      '&:hover': {
+                        backgroundColor: 'rgb(192,192,192)',
+                        color: 'white',
+                      },
+                    }}>
+                    <BsXCircle />
+                  </IconButton>
+                </Box>
+              )}
+            </>
           ),
           endAdornment: (
             <>
@@ -87,7 +127,7 @@ const MessageSend = () => {
                   type='file'
                   id='image-upload'
                   style={{ display: 'none' }}
-                  onChange={sentImage}
+                  onChange={(e) => setSelectedImage(e.target.files[0])}
                 />
                 <FcStackOfPhotos />
               </IconButton>
@@ -95,6 +135,7 @@ const MessageSend = () => {
           ),
         }}
       />
+
       <Popover
         open={Boolean(anchorEl)}
         onClose={() => setAnchorEl(null)}
