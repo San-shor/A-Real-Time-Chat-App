@@ -16,12 +16,6 @@ const sendMessage = async (req, res) => {
   const senderId = req.user._id;
 
   try {
-    console.log('Incoming data:', {
-      senderId,
-      senderName,
-      receiverId,
-      message,
-    });
     const newMessage = new MessageDB({
       senderId,
       senderName,
@@ -44,12 +38,6 @@ const sendImageMessage = async (req, res) => {
   const senderId = req.user._id;
 
   try {
-    console.log('Incoming data:', {
-      senderId,
-      senderName,
-      receiverId,
-      message,
-    });
     const newMessage = new MessageDB({
       senderId,
       senderName,
@@ -60,7 +48,6 @@ const sendImageMessage = async (req, res) => {
       },
     });
     await newMessage.save();
-    console.log({ newMessage });
 
     res.status(201).send(newMessage);
   } catch (error) {

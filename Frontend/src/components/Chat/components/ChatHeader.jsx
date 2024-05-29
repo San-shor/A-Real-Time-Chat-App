@@ -1,4 +1,4 @@
-import { Avatar, Stack, Typography } from '@mui/material';
+import { Avatar, Stack, Typography, Chip } from '@mui/material';
 import {
   IoCallOutline,
   IoVideocamOutline,
@@ -7,7 +7,7 @@ import {
 import { useSelector } from 'react-redux';
 
 const ChatHeader = () => {
-  const { currentFriend } = useSelector((state) => state.chat);
+  const { currentFriend, activeUser } = useSelector((state) => state.chat);
 
   return (
     <Stack
@@ -15,10 +15,16 @@ const ChatHeader = () => {
       alignItems={'center'}
       justifyContent={'space-evenly'}>
       <Stack flexDirection={'row'} alignItems={'center'} gap={2}>
-        <Avatar src={currentFriend.image} />
+        <Avatar src={`http://localhost:5000/${currentFriend.image}`} />
         <Stack spacing={2}>
           <Typography variant='h5'>{currentFriend.userName}</Typography>
-          <Typography variant='body2'>online</Typography>
+          {activeUser &&
+          activeUser.length > 0 &&
+          activeUser.some((user) => user.userId === currentFriend._id) ? (
+            <Chip label='Active Now' variant='outlined' color='success' />
+          ) : (
+            ''
+          )}
         </Stack>
       </Stack>
       <Stack flexDirection={'row'} alignItems={'center'} gap={3}>

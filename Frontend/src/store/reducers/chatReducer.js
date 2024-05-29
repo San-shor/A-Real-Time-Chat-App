@@ -3,6 +3,7 @@ const initialState = {
   chatList: [],
   currentFriend: '',
   messages: [],
+  activeUser: [],
 };
 
 const chatReducer = createSlice({
@@ -21,10 +22,18 @@ const chatReducer = createSlice({
     addMessages: (state, action) => {
       state.messages = [...state.messages, action.payload];
     },
+    setActiveUser: (state, action) => {
+      state.activeUser = action.payload;
+    },
   },
 });
 
-export const { getChat, setCurrentFriend, setMessages, addMessages } =
-  chatReducer.actions;
+export const {
+  getChat,
+  setCurrentFriend,
+  setMessages,
+  addMessages,
+  setActiveUser,
+} = chatReducer.actions;
 
 export default chatReducer.reducer;

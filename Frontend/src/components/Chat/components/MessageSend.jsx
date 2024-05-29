@@ -53,15 +53,6 @@ const MessageSend = () => {
     setNewMessage(newMessage + emoji.emoji);
   };
 
-  // const sentImage = (e) => {
-  //   const formData = new FormData();
-  //   formData.append('senderName', user.userInfo.username);
-  //   formData.append('receiverId', currentFriend._id);
-  //   formData.append('image', e.target.files[0]);
-  //   dispatch(imageMessageSend(formData));
-  //   setNewMessage(null);
-  // };
-
   const handleImageClick = () => {
     document.getElementById('image-upload').click();
   };

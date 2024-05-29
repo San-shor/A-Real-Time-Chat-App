@@ -7,7 +7,6 @@ const Chat = () => {
   const { messages } = useSelector((state) => state.chat);
   const { user } = useSelector((state) => state.auth);
   const { currentFriend } = useSelector((state) => state.chat);
-  console.log(messages);
 
   const scrollRef = useRef();
 

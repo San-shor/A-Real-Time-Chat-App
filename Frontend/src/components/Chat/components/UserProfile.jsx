@@ -11,19 +11,39 @@ import { CiEdit, CiSearch } from 'react-icons/ci';
 import ActivePeople from './ActivePeople';
 import ChatList from './ChatList';
 import { useDispatch, useSelector } from 'react-redux';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { getChatList } from '../../../store/actions/chatAction';
-import { setCurrentFriend } from '../../../store/reducers/chatReducer';
-
+import {
+  setCurrentFriend,
+  setActiveUser,
+} from '../../../store/reducers/chatReducer';
+import { io } from 'socket.io-client';
 const UserProfile = () => {
   const dispatch = useDispatch();
+  const socket = useRef();
 
   const { chatList } = useSelector((state) => state.chat);
   const { user } = useSelector((state) => state.auth);
-
+  const { activeUser } = useSelector((state) => state.chat);
   useEffect(() => {
     dispatch(getChatList());
   }, []);
+
+  useEffect(() => {
+    socket.current = io('ws://localhost:7000');
+  }, []);
+
+  useEffect(() => {
+    socket.current.emit('addUser', user.userInfo.id, user);
+  }, []);
+
+  useEffect(() => {
+    socket.current.on('getUser', (users) => {
+      const filterUser = users.filter((u) => u.userId !== user.userInfo.id);
+      dispatch(setActiveUser(filterUser));
+    });
+  }, []);
+
   return (
     <Paper elevation={1} sx={{ p: 2 }}>
       <Stack
@@ -55,7 +75,8 @@ const UserProfile = () => {
         sx={{ mt: 4 }}
       />
       <Stack sx={{ mt: 4 }} spacing={4}>
-        <ActivePeople />
+        <ActivePeople key={user.id} activeUser={activeUser} />
+
         {chatList.friends && chatList.friends.length > 0 ? (
           chatList.friends.map((friend) => (
             <div

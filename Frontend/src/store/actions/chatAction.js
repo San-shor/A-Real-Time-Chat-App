@@ -24,7 +24,7 @@ export const messageSend = (data) => async (dispatch) => {
 export const imageMessageSend = (data) => async (dispatch) => {
   try {
     const response = await axios.post(`${URL}/sendImageMessage`, data);
-    console.log(response.data);
+
     dispatch(addMessages(response.data));
   } catch (error) {
     console.log(error);

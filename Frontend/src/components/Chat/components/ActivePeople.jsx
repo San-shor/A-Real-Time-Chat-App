@@ -29,45 +29,24 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
   },
 }));
 
-const ActivePeople = () => {
+// eslint-disable-next-line react/prop-types
+const ActivePeople = ({ activeUser }) => {
   return (
     <Stack direction='row' alignItems='center' spacing={1}>
-      <StyledBadge
-        overlap='circular'
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-        variant='dot'>
-        <Avatar src='https://modernize-nextjs.adminmart.com/images/profile/user-10.jpg' />
-      </StyledBadge>
-      <StyledBadge
-        overlap='circular'
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-        variant='dot'>
-        <Avatar src='https://modernize-nextjs.adminmart.com/images/profile/user-1.jpg' />
-      </StyledBadge>
-      <StyledBadge
-        overlap='circular'
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-        variant='dot'>
-        <Avatar src='https://modernize-nextjs.adminmart.com/images/profile/user-5.jpg' />
-      </StyledBadge>
-      <StyledBadge
-        overlap='circular'
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-        variant='dot'>
-        <Avatar src='https://modernize-nextjs.adminmart.com/images/profile/user-3.jpg' />
-      </StyledBadge>
-      <StyledBadge
-        overlap='circular'
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-        variant='dot'>
-        <Avatar src='https://modernize-nextjs.adminmart.com/images/profile/user-4.jpg' />
-      </StyledBadge>
-      <StyledBadge
-        overlap='circular'
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-        variant='dot'>
-        <Avatar src='https://modernize-nextjs.adminmart.com/images/profile/user-8.jpg' />
-      </StyledBadge>
+      {activeUser && activeUser.length > 0
+        ? activeUser.map((user) => (
+            <StyledBadge
+              key={user.id} // Assuming each user has a unique 'id' property
+              overlap='circular'
+              anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+              variant='dot'>
+              <Avatar
+                src={`http://localhost:5000/${user?.userInfo?.userInfo?.image}`}
+                alt={user?.userInfo?.userInfo?.name}
+              />
+            </StyledBadge>
+          ))
+        : null}
     </Stack>
   );
 };
