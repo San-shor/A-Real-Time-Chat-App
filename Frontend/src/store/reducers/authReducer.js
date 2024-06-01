@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-  user: null,
+  user: JSON.parse(localStorage.getItem('user')) || null,
   authenticate: false,
   successMessage: '',
   errorMessage: '',
@@ -13,7 +13,7 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     success: (state, action) => {
-      state.user = action.payload;
+      state.user = action.payload.user;
       state.authenticate = true;
       state.successMessage = action.payload.successMessage;
       state.errorMessage = '';

@@ -22,6 +22,10 @@ const chatReducer = createSlice({
     addMessages: (state, action) => {
       state.messages = [...state.messages, action.payload];
     },
+    realTimeMessages: (state, action) => {
+      state.messages = [...state.messages, action.payload];
+    },
+
     setActiveUser: (state, action) => {
       state.activeUser = action.payload;
     },
@@ -34,6 +38,7 @@ export const {
   setMessages,
   addMessages,
   setActiveUser,
+  realTimeMessages,
 } = chatReducer.actions;
 
 export default chatReducer.reducer;

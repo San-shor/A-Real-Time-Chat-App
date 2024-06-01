@@ -41,8 +41,8 @@ const ActivePeople = ({ activeUser }) => {
               anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
               variant='dot'>
               <Avatar
-                src={`http://localhost:5000/${user?.userInfo?.userInfo?.image}`}
-                alt={user?.userInfo?.userInfo?.name}
+                src={`http://localhost:5000/${user?.userInfo?.image}`}
+                alt={user?.userInfo?.name}
               />
             </StyledBadge>
           ))

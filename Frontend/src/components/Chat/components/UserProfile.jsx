@@ -23,7 +23,9 @@ const UserProfile = () => {
   const socket = useRef();
 
   const { chatList } = useSelector((state) => state.chat);
+
   const { user } = useSelector((state) => state.auth);
+
   const { activeUser } = useSelector((state) => state.chat);
   useEffect(() => {
     dispatch(getChatList());
@@ -34,12 +36,12 @@ const UserProfile = () => {
   }, []);
 
   useEffect(() => {
-    socket.current.emit('addUser', user.userInfo.id, user);
+    socket.current.emit('addUser', user.id, user);
   }, []);
 
   useEffect(() => {
     socket.current.on('getUser', (users) => {
-      const filterUser = users.filter((u) => u.userId !== user.userInfo.id);
+      const filterUser = users.filter((u) => u.userId !== user.id);
       dispatch(setActiveUser(filterUser));
     });
   }, []);
@@ -52,8 +54,8 @@ const UserProfile = () => {
         alignItems='center'
         spacing={1}>
         <Stack direction='row' alignItems='center' spacing={1}>
-          <Avatar src={`http://localhost:5000/${user.userInfo.image}`} />
-          <Typography variant='body1'>{user.userInfo.username}</Typography>
+          <Avatar src={`http://localhost:5000/${user.image}`} />
+          <Typography variant='body1'>{user.username}</Typography>
         </Stack>
         <Stack direction='row' alignItems='center' spacing={1}>
           <IoEllipsisVerticalCircle />

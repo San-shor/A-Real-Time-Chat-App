@@ -6,6 +6,7 @@ const SECRET_KEY = process.env.SECRET_KEY || 'Whatever';
 
 const userRegister = async (req, res) => {
   const { userName, email, password } = req.body;
+  console.log('user');
 
   try {
     const existingUser = await User.findOne({ email });
@@ -19,16 +20,17 @@ const userRegister = async (req, res) => {
       password: await bcrypt.hash(password, 10),
       image: req.file.path,
     });
-
+    console.log(newUser);
     const savedUser = await newUser.save();
 
     const accessToken = jwt.sign({ _id: savedUser._id }, SECRET_KEY);
+
     const userInfo = {
       savedUser,
       successMessage: 'Your registration was successful',
       accessToken,
     };
-
+    console.log(userInfo);
     res.status(201).json(userInfo);
   } catch (error) {
     console.error('Error registering user:', error);

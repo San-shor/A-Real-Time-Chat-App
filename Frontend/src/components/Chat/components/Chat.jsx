@@ -20,7 +20,7 @@ const Chat = () => {
 
       {messages && messages.length > 0 ? (
         messages.map((m) =>
-          m.senderId === user.userInfo.id ? (
+          m.senderId === user.id ? (
             <Box
               ref={scrollRef}
               key={m._id}
@@ -54,7 +54,7 @@ const Chat = () => {
                 </Typography>
               </Box>
               <Avatar
-                src={`http://localhost:5000/${user.userInfo.image}`}
+                src={`http://localhost:5000/${user.image}`}
                 sx={{ ml: 2, alignSelf: 'flex-start' }}
               />
             </Box>

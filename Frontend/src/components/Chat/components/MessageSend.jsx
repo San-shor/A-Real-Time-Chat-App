@@ -1,7 +1,7 @@
 import { TextField, IconButton, Popover, Box, Avatar } from '@mui/material';
 import { BsSend, BsEmojiSmile, BsXCircle } from 'react-icons/bs';
 import { FcStackOfPhotos } from 'react-icons/fc';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   messageSend,
   fetchMessages,
@@ -9,9 +9,12 @@ import {
 } from '../../../store/actions/chatAction';
 import { useDispatch, useSelector } from 'react-redux';
 import EmojiPicker from 'emoji-picker-react';
+import { io } from 'socket.io-client';
 
 const MessageSend = () => {
   const dispatch = useDispatch();
+
+  const socket = useRef();
 
   const [newMessage, setNewMessage] = useState('');
   const [selectedImage, setSelectedImage] = useState(null);
@@ -19,6 +22,7 @@ const MessageSend = () => {
   const { user } = useSelector((state) => state.auth);
 
   const { currentFriend } = useSelector((state) => state.chat);
+  console.log(currentFriend);
   const [anchorEl, setAnchorEl] = useState(null);
 
   const inputHandle = (e) => {
@@ -32,6 +36,7 @@ const MessageSend = () => {
       formData.append('senderName', user.userInfo.username);
       formData.append('receiverId', currentFriend._id);
       formData.append('image', selectedImage);
+
       dispatch(imageMessageSend(formData));
       setSelectedImage(null);
     } else {
@@ -40,8 +45,19 @@ const MessageSend = () => {
         receiverId: currentFriend._id,
         message: newMessage,
       };
+
       dispatch(messageSend(data));
     }
+    socket.current.emit('sendMessage', {
+      senderId: user.userInfo.id,
+      senderName: user.userInfo.username,
+      receiverId: currentFriend._id,
+      time: new Date(),
+      message: {
+        text: newMessage,
+        image: selectedImage,
+      },
+    });
     setNewMessage('');
   };
 
@@ -63,6 +79,14 @@ const MessageSend = () => {
   useEffect(() => {
     dispatch(fetchMessages(currentFriend._id));
   }, [currentFriend._id]);
+
+  useEffect(() => {
+    socket.current = io('ws://localhost:7000');
+
+    socket.current.on('getMessage', (data) => {
+      console.log(data);
+    });
+  }, []);
 
   return (
     <form style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
