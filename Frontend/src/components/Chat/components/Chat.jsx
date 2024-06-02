@@ -9,6 +9,7 @@ const Chat = () => {
   const { currentFriend } = useSelector((state) => state.chat);
 
   const scrollRef = useRef();
+  console.log(messages);
 
   useEffect(() => {
     scrollRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -69,8 +70,8 @@ const Chat = () => {
                 mb: 2,
               }}>
               <Avatar
-                alt={currentFriend.userName}
-                src={currentFriend.image}
+                alt={`http://localhost:5000/${currentFriend.userName}`}
+                src={`http://localhost:5000/${currentFriend.image}`}
                 sx={{ mr: 2, alignSelf: 'flex-start' }}
               />
               <Box

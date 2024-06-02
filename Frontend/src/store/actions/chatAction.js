@@ -1,7 +1,9 @@
 import axios from 'axios';
 import { getChat, setMessages, addMessages } from '../reducers/chatReducer';
+import io from 'socket.io-client';
 
 const URL = 'http://localhost:5000/api/messenger';
+const socket = io('http://localhost:7000');
 export const getChatList = () => async (dispatch) => {
   const token = JSON.parse(localStorage.getItem('user')).token;
   const config = {
@@ -27,7 +29,8 @@ export const messageSend = (data) => async (dispatch) => {
   };
   try {
     const response = await axios.post(`${URL}/sendMessage`, data, config);
-
+    console.log(response.data);
+    socket.emit('sendMessage', response.data);
     dispatch(addMessages(response.data));
   } catch (error) {
     console.log(error);

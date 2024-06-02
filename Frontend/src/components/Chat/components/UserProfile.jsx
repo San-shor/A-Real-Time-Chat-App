@@ -11,7 +11,7 @@ import { CiEdit, CiSearch } from 'react-icons/ci';
 import ActivePeople from './ActivePeople';
 import ChatList from './ChatList';
 import { useDispatch, useSelector } from 'react-redux';
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import { getChatList } from '../../../store/actions/chatAction';
 import {
   setCurrentFriend,
@@ -20,27 +20,24 @@ import {
 import { io } from 'socket.io-client';
 const UserProfile = () => {
   const dispatch = useDispatch();
-  const socket = useRef();
+  const socket = io('http://localhost:7000');
 
   const { chatList } = useSelector((state) => state.chat);
 
   const { user } = useSelector((state) => state.auth);
 
   const { activeUser } = useSelector((state) => state.chat);
+  console.log(activeUser);
   useEffect(() => {
     dispatch(getChatList());
   }, []);
 
   useEffect(() => {
-    socket.current = io('ws://localhost:7000');
+    socket.emit('addActiveUser', user.id, user);
   }, []);
 
   useEffect(() => {
-    socket.current.emit('addUser', user.id, user);
-  }, []);
-
-  useEffect(() => {
-    socket.current.on('getUser', (users) => {
+    socket.on('getActiveUser', (users) => {
       const filterUser = users.filter((u) => u.userId !== user.id);
       dispatch(setActiveUser(filterUser));
     });

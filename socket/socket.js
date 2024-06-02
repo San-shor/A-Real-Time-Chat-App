@@ -5,57 +5,34 @@ const io = require('socket.io')(7000, {
   },
 });
 
-let users = [];
-
+let activeUsers = [];
 const addUser = (userId, socketId, userInfo) => {
-  const checkUser = users.some((u) => u.userId === userId);
+  const checkUser = activeUsers.some((u) => u.userId === userId);
   if (!checkUser) {
-    users.push({ userId, socketId, userInfo });
+    activeUsers.push({ userId, socketId, userInfo });
   }
 };
-
-const removeUser = (socketId) => {
-  users = users.filter((user) => user.socketId !== socketId);
-};
-
-const findFriend = (id) => {
-  return users.find((user) => user.userId === id);
-};
-
 io.on('connection', (socket) => {
-  console.log('socket is connecting');
+  console.log('New user connected');
 
-  socket.on('addUser', (userId, userInfo) => {
+  socket.on('join', (userId) => {
+    socket.join(userId);
+    // console.log(`User with ID ${userId} joined their room`);
+  });
+  socket.on('addActiveUser', (userId, userInfo) => {
     addUser(userId, socket.id, userInfo);
-    io.emit('getUser', users);
+    console.log(activeUsers);
+    io.emit('getActiveUser', activeUsers);
   });
 
-  socket.on('sendMessage', (data) => {
-    const user = findFriend(data.receiverId);
-    console.log(user);
-
-    if (user !== undefined) {
-      socket.to(user.socketId).emit('getMessage', {
-        senderId: data.senderId,
-        senderName: data.senderName,
-        receiverId: data.receiverId,
-        createAt: data.time,
-        message: {
-          text: data.message.text,
-          image: URL.createObjectURL(
-            new Blob([new Uint8Array(data.message.image)], {
-              type: 'image/png',
-            })
-          ),
-        },
-      });
-    } else {
-      console.log('User not found for receiverId:', data.receiverId);
-    }
+  socket.on('sendMessage', (message) => {
+    io.to(message.receiverId).emit('receiveMessage', message); // Broadcast message to all connected clients
   });
 
   socket.on('disconnect', () => {
-    removeUser(socket.id);
-    io.emit('getUser', users);
+    if (socket.userId) {
+      activeUsers = activeUsers.filter((user) => user !== socket.userId);
+      io.emit('activeUsers', activeUsers); // Broadcast updated active users list to all clients
+    }
   });
 });

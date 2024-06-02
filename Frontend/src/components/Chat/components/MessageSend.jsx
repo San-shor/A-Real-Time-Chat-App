@@ -1,7 +1,7 @@
 import { TextField, IconButton, Popover, Box, Avatar } from '@mui/material';
 import { BsSend, BsEmojiSmile, BsXCircle } from 'react-icons/bs';
 import { FcStackOfPhotos } from 'react-icons/fc';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   messageSend,
   fetchMessages,
@@ -9,12 +9,12 @@ import {
 } from '../../../store/actions/chatAction';
 import { useDispatch, useSelector } from 'react-redux';
 import EmojiPicker from 'emoji-picker-react';
-import { io } from 'socket.io-client';
+import io from 'socket.io-client';
+import { addMessages } from '../../../store/reducers/chatReducer';
 
 const MessageSend = () => {
   const dispatch = useDispatch();
-
-  const socket = useRef();
+  const socket = io('http://localhost:7000');
 
   const [newMessage, setNewMessage] = useState('');
   const [selectedImage, setSelectedImage] = useState(null);
@@ -22,7 +22,7 @@ const MessageSend = () => {
   const { user } = useSelector((state) => state.auth);
 
   const { currentFriend } = useSelector((state) => state.chat);
-  console.log(currentFriend);
+
   const [anchorEl, setAnchorEl] = useState(null);
 
   const inputHandle = (e) => {
@@ -33,7 +33,7 @@ const MessageSend = () => {
     e.preventDefault();
     if (selectedImage) {
       const formData = new FormData();
-      formData.append('senderName', user.userInfo.username);
+      formData.append('senderName', user.username);
       formData.append('receiverId', currentFriend._id);
       formData.append('image', selectedImage);
 
@@ -41,23 +41,14 @@ const MessageSend = () => {
       setSelectedImage(null);
     } else {
       const data = {
-        senderName: user.userInfo.username,
+        senderName: user.username,
         receiverId: currentFriend._id,
         message: newMessage,
       };
-
+      // socket.emit('sendMessage', data);
       dispatch(messageSend(data));
     }
-    socket.current.emit('sendMessage', {
-      senderId: user.userInfo.id,
-      senderName: user.userInfo.username,
-      receiverId: currentFriend._id,
-      time: new Date(),
-      message: {
-        text: newMessage,
-        image: selectedImage,
-      },
-    });
+
     setNewMessage('');
   };
 
@@ -81,12 +72,16 @@ const MessageSend = () => {
   }, [currentFriend._id]);
 
   useEffect(() => {
-    socket.current = io('ws://localhost:7000');
-
-    socket.current.on('getMessage', (data) => {
-      console.log(data);
+    socket.emit('join', user.id);
+    socket.on('receiveMessage', (message) => {
+      // Dispatch an action to add the message to the Redux store
+      dispatch(addMessages(message));
     });
-  }, []);
+
+    return () => {
+      socket.off('receiveMessage');
+    };
+  }, [user.id]);
 
   return (
     <form style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
