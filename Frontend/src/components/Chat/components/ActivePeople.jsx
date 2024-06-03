@@ -31,6 +31,7 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
 
 // eslint-disable-next-line react/prop-types
 const ActivePeople = ({ activeUser }) => {
+  console.log(activeUser);
   return (
     <Stack direction='row' alignItems='center' spacing={1}>
       {activeUser && activeUser.length > 0

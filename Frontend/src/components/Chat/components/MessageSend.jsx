@@ -27,6 +27,11 @@ const MessageSend = () => {
 
   const inputHandle = (e) => {
     setNewMessage(e.target.value);
+    socket.emit('typing-msg', {
+      senderId: user.id,
+      receiverId: currentFriend._id,
+      msg: e.target.value,
+    });
   };
 
   const sendMessage = (e) => {
@@ -45,9 +50,15 @@ const MessageSend = () => {
         receiverId: currentFriend._id,
         message: newMessage,
       };
-      // socket.emit('sendMessage', data);
+
       dispatch(messageSend(data));
     }
+
+    socket.emit('typing-msg', {
+      senderId: user.id,
+      receiverId: currentFriend._id,
+      msg: '',
+    });
 
     setNewMessage('');
   };

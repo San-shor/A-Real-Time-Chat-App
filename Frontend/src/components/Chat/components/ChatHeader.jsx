@@ -21,7 +21,12 @@ const ChatHeader = () => {
           {activeUser &&
           activeUser.length > 0 &&
           activeUser.some((user) => user.userId === currentFriend._id) ? (
-            <Chip label='Active Now' variant='outlined' color='success' />
+            <Chip
+              label='Active Now'
+              variant='outlined'
+              color='success'
+              size='small'
+            />
           ) : (
             ''
           )}

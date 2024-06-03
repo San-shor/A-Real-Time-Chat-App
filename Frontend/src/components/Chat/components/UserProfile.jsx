@@ -38,7 +38,9 @@ const UserProfile = () => {
 
   useEffect(() => {
     socket.on('getActiveUser', (users) => {
+      console.log(users);
       const filterUser = users.filter((u) => u.userId !== user.id);
+      console.log(filterUser);
       dispatch(setActiveUser(filterUser));
     });
   }, []);

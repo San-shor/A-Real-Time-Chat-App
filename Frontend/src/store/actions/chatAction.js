@@ -29,7 +29,7 @@ export const messageSend = (data) => async (dispatch) => {
   };
   try {
     const response = await axios.post(`${URL}/sendMessage`, data, config);
-    console.log(response.data);
+
     socket.emit('sendMessage', response.data);
     dispatch(addMessages(response.data));
   } catch (error) {
@@ -46,7 +46,7 @@ export const imageMessageSend = (data) => async (dispatch) => {
   };
   try {
     const response = await axios.post(`${URL}/sendImageMessage`, data, config);
-
+    socket.emit('sendMessage', response.data);
     dispatch(addMessages(response.data));
   } catch (error) {
     console.log(error);
