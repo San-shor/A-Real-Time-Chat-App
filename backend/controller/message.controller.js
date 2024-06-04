@@ -2,10 +2,22 @@ const { User } = require('../models/register.model');
 const { MessageDB } = require('../models/message.model');
 
 const getChatList = async (req, res) => {
+  let fnd_msg = [];
   try {
     const chatList = await User.find({ _id: { $ne: req.user._id } });
 
-    res.status(200).send({ success: true, friends: chatList });
+    for (let i = 0; i < chatList.length; i++) {
+      let lastMsg = await getLastMessage(req.user._id, chatList[i]._id);
+      fnd_msg = [
+        ...fnd_msg,
+        {
+          fndInfo: chatList[i],
+          msgInfo: lastMsg,
+        },
+      ];
+    }
+
+    res.status(200).send({ success: true, friends: fnd_msg });
   } catch (error) {
     res.status(500).send({ error: 'Internal server error' });
   }
@@ -73,4 +85,47 @@ const getMessage = async (req, res) => {
     res.status(500).send({ error: 'Internal server error' });
   }
 };
-module.exports = { getChatList, sendMessage, getMessage, sendImageMessage };
+const getLastMessage = async (userId, fdId) => {
+  const msg = await MessageDB.findOne({
+    $or: [
+      {
+        $and: [
+          {
+            senderId: {
+              $eq: userId,
+            },
+          },
+          {
+            receiverId: {
+              $eq: fdId,
+            },
+          },
+        ],
+      },
+      {
+        $and: [
+          {
+            senderId: {
+              $eq: fdId,
+            },
+          },
+          {
+            receiverId: {
+              $eq: userId,
+            },
+          },
+        ],
+      },
+    ],
+  }).sort({
+    updatedAt: -1,
+  });
+  console.log(msg);
+  return msg;
+};
+module.exports = {
+  getChatList,
+  sendMessage,
+  getMessage,
+  sendImageMessage,
+};

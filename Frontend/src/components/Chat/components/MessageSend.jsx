@@ -69,6 +69,11 @@ const MessageSend = () => {
 
   const sentEmonji = (emoji) => {
     setNewMessage(newMessage + emoji.emoji);
+    socket.emit('typing-msg', {
+      senderId: user.id,
+      receiverId: currentFriend._id,
+      msg: emoji.emoji,
+    });
   };
 
   const handleImageClick = () => {
@@ -85,7 +90,7 @@ const MessageSend = () => {
   useEffect(() => {
     socket.emit('join', user.id);
     socket.on('receiveMessage', (message) => {
-      // Dispatch an action to add the message to the Redux store
+      console.log('Received message:', message);
       dispatch(addMessages(message));
     });
 

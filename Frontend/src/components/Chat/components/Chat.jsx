@@ -14,8 +14,6 @@ const Chat = () => {
   const { user } = useSelector((state) => state.auth);
   const { currentFriend } = useSelector((state) => state.chat);
 
-  console.log(messages);
-
   useEffect(() => {
     scrollRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
@@ -23,14 +21,12 @@ const Chat = () => {
   useEffect(() => {
     socket.emit('join', user.id);
     socket.on('receiveTypingMsg', (msg) => {
-      console.log(msg);
       setTypingMsg(msg);
     });
     return () => {
       socket.off('receiveTypingMsg');
     };
   }, [user.id]);
-  console.log(typingMsg);
 
   return (
     <Box sx={{ padding: 2 }}>

@@ -12,6 +12,11 @@ const addUser = (userId, socketId, userInfo) => {
     activeUsers.push({ userId, socketId, userInfo });
   }
 };
+
+const findUser = (userId) => {
+  return activeUsers.find((user) => user.userId === userId);
+};
+
 io.on('connection', (socket) => {
   socket.on('join', (userId) => {
     socket.join(userId);
@@ -24,8 +29,12 @@ io.on('connection', (socket) => {
   });
 
   socket.on('sendMessage', (message) => {
-    console.log(message);
-    io.to(message.receiverId).emit('receiveMessage', message);
+    const user = findUser(message.receiverId);
+    console.log('Message to send:', message);
+    console.log('Receiver user:', user);
+    if (user) {
+      io.to(user.socketId).emit('receiveMessage', message);
+    }
   });
 
   socket.on('typing-msg', (data) => {

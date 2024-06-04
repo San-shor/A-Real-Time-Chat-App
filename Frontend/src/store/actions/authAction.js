@@ -7,7 +7,7 @@ export const userRegister = (data) => {
   return async (dispatch) => {
     try {
       const response = await axios.post(`${URL}/user-register`, data);
-      console.log(response.data);
+
       const user = {
         email: response.data.savedUser.email,
         id: response.data.savedUser._id,
@@ -33,7 +33,7 @@ export const userLogin = (data) => {
     };
     try {
       const response = await axios.post(`${URL}/user-login`, data, config);
-      console.log(response.data);
+
       localStorage.setItem('user', JSON.stringify(response.data.userInfo));
       dispatch(success({ user: response.data.userInfo }));
     } catch (err) {

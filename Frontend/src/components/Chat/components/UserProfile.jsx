@@ -27,7 +27,7 @@ const UserProfile = () => {
   const { user } = useSelector((state) => state.auth);
 
   const { activeUser } = useSelector((state) => state.chat);
-  console.log(activeUser);
+
   useEffect(() => {
     dispatch(getChatList());
   }, []);
@@ -38,9 +38,8 @@ const UserProfile = () => {
 
   useEffect(() => {
     socket.on('getActiveUser', (users) => {
-      console.log(users);
       const filterUser = users.filter((u) => u.userId !== user.id);
-      console.log(filterUser);
+
       dispatch(setActiveUser(filterUser));
     });
   }, []);
@@ -81,8 +80,8 @@ const UserProfile = () => {
         {chatList.friends && chatList.friends.length > 0 ? (
           chatList.friends.map((friend) => (
             <div
-              key={friend._id}
-              onClick={() => dispatch(setCurrentFriend(friend))}>
+              key={friend.fndInfo._id}
+              onClick={() => dispatch(setCurrentFriend(friend.fndInfo))}>
               <ChatList friend={friend} />
             </div>
           ))

@@ -13,7 +13,7 @@ export const getChatList = () => async (dispatch) => {
   };
   try {
     const response = await axios.get(`${URL}/chatList`, config);
-    console.log(response.data);
+
     dispatch(getChat(response.data));
   } catch (error) {
     console.log(error);
