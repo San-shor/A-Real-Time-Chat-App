@@ -8,6 +8,14 @@ const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const PORT = process.env.PORT || 5000;
 
+// const url =
+//   'mongodb+srv://sanjida:sanjida1012@cluster0.debm3d7.mongodb.net/messenger?retryWrites=true&w=majority&appName=Cluster0';
+
+// const client = new MongoClient(uri, {
+//   useNewUrlParser: true,
+//   useUnifiedTopology: true,
+// });
+
 const corsConfig = {
   origin: 'http://localhost:5173',
   credentials: true,
@@ -23,7 +31,9 @@ app.use('/api/messenger', chatRoute);
 
 (async function main() {
   try {
-    await mongoose.connect('mongodb://localhost:27017/messenger');
+    await mongoose.connect(
+      'mongodb+srv://sanjida:sanjida1012@cluster0.debm3d7.mongodb.net/messenger?retryWrites=true&w=majority&appName=Cluster0'
+    );
     console.log('connected successfully');
     app.listen(PORT, () => {
       console.log(`Server ( JWT) is running at http://localhost:${PORT}`);

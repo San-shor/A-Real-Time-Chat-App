@@ -20,7 +20,6 @@ const findUser = (userId) => {
 io.on('connection', (socket) => {
   socket.on('join', (userId) => {
     socket.join(userId);
-    // console.log(`User with ID ${userId} joined their room`);
   });
   socket.on('addActiveUser', (userId, userInfo) => {
     addUser(userId, socket.id, userInfo);
@@ -29,12 +28,8 @@ io.on('connection', (socket) => {
   });
 
   socket.on('sendMessage', (message) => {
-    const user = findUser(message.receiverId);
-    console.log('Message to send:', message);
-    console.log('Receiver user:', user);
-    if (user) {
-      io.to(user.socketId).emit('receiveMessage', message);
-    }
+    console.log(message);
+    io.to(message.receiverId).emit('receiveMessage', message);
   });
 
   socket.on('typing-msg', (data) => {

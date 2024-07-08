@@ -1,11 +1,11 @@
 import { Avatar, Stack, Typography, Box } from '@mui/material';
 import { useSelector } from 'react-redux';
 import moment from 'moment';
+import { FaCircleCheck } from 'react-icons/fa6';
 
 const ChatList = ({ friend }) => {
   const { user } = useSelector((state) => state.auth);
 
-  console.log(friend);
   return (
     <Stack
       sx={{
@@ -36,11 +36,23 @@ const ChatList = ({ friend }) => {
           </Typography>
         </Box>
         {user.id === friend.msgInfo?.senderId ? (
-          <Avatar
-            src={`./image/${friend.fndInfo.image}`}
-            alt=''
-            sx={{ width: 24, height: 24 }}
-          />
+          friend.msgInfo.status === 'seen' ? (
+            <Avatar
+              src={`./image/${friend.fndInfo.image}`}
+              alt=''
+              sx={{ width: 24, height: 24 }}
+            />
+          ) : friend.msgInfo.status === 'delivered' ? (
+            <FaCircleCheck />
+          ) : (
+            <Box
+              sx={{
+                width: '10px',
+                height: '10px',
+                borderRadius: '50%',
+                backgroundColor: 'blue',
+              }}></Box>
+          )
         ) : (
           <Box
             sx={{

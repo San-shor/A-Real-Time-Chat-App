@@ -6,11 +6,16 @@ import {
   messageSend,
   fetchMessages,
   imageMessageSend,
+  messageSeen,
+  messageDelivered,
 } from '../../../store/actions/chatAction';
 import { useDispatch, useSelector } from 'react-redux';
 import EmojiPicker from 'emoji-picker-react';
 import io from 'socket.io-client';
-import { addMessages } from '../../../store/reducers/chatReducer';
+import {
+  addMessages,
+  updateLastMessage,
+} from '../../../store/reducers/chatReducer';
 
 const MessageSend = () => {
   const dispatch = useDispatch();
@@ -18,10 +23,13 @@ const MessageSend = () => {
 
   const [newMessage, setNewMessage] = useState('');
   const [selectedImage, setSelectedImage] = useState(null);
+  const [socketMessage, setSocketMessage] = useState('');
 
   const { user } = useSelector((state) => state.auth);
 
-  const { currentFriend } = useSelector((state) => state.chat);
+  const { currentFriend, messageSendSuccess, messages } = useSelector(
+    (state) => state.chat
+  );
 
   const [anchorEl, setAnchorEl] = useState(null);
 
@@ -46,6 +54,7 @@ const MessageSend = () => {
       setSelectedImage(null);
     } else {
       const data = {
+        senderId: user.id,
         senderName: user.username,
         receiverId: currentFriend._id,
         message: newMessage,
@@ -90,14 +99,35 @@ const MessageSend = () => {
   useEffect(() => {
     socket.emit('join', user.id);
     socket.on('receiveMessage', (message) => {
-      console.log('Received message:', message);
-      dispatch(addMessages(message));
+      // console.log('Received message:', message);
+      setSocketMessage(message);
     });
 
     return () => {
       socket.off('receiveMessage');
     };
   }, [user.id]);
+
+  useEffect(() => {
+    if (socketMessage && currentFriend) {
+      if (
+        socketMessage.senderId === currentFriend._id &&
+        socketMessage.receiverId === user.id
+      ) {
+        dispatch(addMessages(socketMessage));
+      }
+      dispatch(
+        updateLastMessage({
+          friendId:
+            socketMessage.senderId !== user.id
+              ? socketMessage.senderId
+              : socketMessage.receiverId,
+          message: socketMessage,
+        })
+      );
+    }
+    setSocketMessage('');
+  }, [socketMessage]);
 
   return (
     <form style={{ display: 'flex', gap: 10, alignItems: 'center' }}>

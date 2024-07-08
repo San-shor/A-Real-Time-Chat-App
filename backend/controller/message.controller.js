@@ -123,9 +123,45 @@ const getLastMessage = async (userId, fdId) => {
   console.log(msg);
   return msg;
 };
+
+const messageSeen = async (req, res) => {
+  const messageId = req.body._id;
+
+  try {
+    const updateMessageStatus = await MessageDB.findByIdAndUpdate(
+      messageId,
+      {
+        status: 'seen',
+      },
+      { new: true }
+    );
+    res.status(200).send(updateMessageStatus);
+  } catch (error) {
+    res.status(500).send({ error: 'Internal server error' });
+  }
+};
+const messageDelivered = async (req, res) => {
+  const messageId = req.body._id;
+
+  try {
+    const updateMessageStatus = await MessageDB.findByIdAndUpdate(
+      messageId,
+      {
+        status: 'delivered',
+      },
+      { new: true }
+    );
+    res.status(200).send(updateMessageStatus);
+  } catch (error) {
+    res.status(500).send({ error: 'Internal server error' });
+  }
+};
+
 module.exports = {
   getChatList,
   sendMessage,
   getMessage,
   sendImageMessage,
+  messageSeen,
+  messageDelivered,
 };

@@ -29,7 +29,7 @@ const Chat = () => {
   }, [user.id]);
 
   return (
-    <Box sx={{ padding: 2 }}>
+    <Box sx={{ padding: 2, height: '400px', overflowY: 'auto' }}>
       {/* Sent Message */}
 
       {messages && messages.length > 0 ? (

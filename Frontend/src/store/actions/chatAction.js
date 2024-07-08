@@ -69,15 +69,32 @@ export const fetchMessages = (id) => async (dispatch) => {
   }
 };
 
-// axios.interceptors.request.use(
-//   (config) => {
-//     const token = JSON.parse(localStorage.getItem('user')).token;
-//     if (token) {
-//       config.headers['Authorization'] = `Bearer ${token}`;
-//     }
-//     return config;
-//   },
-//   (error) => {
-//     return Promise.reject(error);
-//   }
-// );
+export const messageSeen = (id) => async (dispatch) => {
+  const token = JSON.parse(localStorage.getItem('user')).token;
+  const config = {
+    headers: {
+      Authorization: 'Bearer ' + token,
+    },
+  };
+  try {
+    const response = await axios.put(`${URL}/seen-message/${id}`, config);
+    console.log(response.data);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const messageDelivered = (id) => async (dispatch) => {
+  const token = JSON.parse(localStorage.getItem('user')).token;
+  const config = {
+    headers: {
+      Authorization: 'Bearer ' + token,
+    },
+  };
+  try {
+    const response = await axios.put(`${URL}/delivered-message/${id}`, config);
+    console.log(response.data);
+  } catch (error) {
+    console.log(error);
+  }
+};

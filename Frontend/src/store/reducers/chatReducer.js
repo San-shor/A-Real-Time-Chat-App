@@ -3,6 +3,7 @@ const initialState = {
   chatList: [],
   currentFriend: '',
   messages: [],
+  messageSendSuccess: false,
   activeUser: [],
 };
 
@@ -21,10 +22,20 @@ const chatReducer = createSlice({
     },
     addMessages: (state, action) => {
       state.messages = [...state.messages, action.payload];
+      state.messageSendSuccess = true;
     },
 
     setActiveUser: (state, action) => {
       state.activeUser = action.payload;
+    },
+    updateLastMessage: (state, action) => {
+      const { friendId, message } = action.payload;
+      const chatIndex = state.chatList.friends.findIndex(
+        (chat) => chat.fndInfo._id === friendId
+      );
+      if (chatIndex !== -1) {
+        state.chatList.friends[chatIndex].msgInfo = message;
+      }
     },
   },
 });
@@ -35,6 +46,8 @@ export const {
   setMessages,
   addMessages,
   setActiveUser,
+  setLastMessage,
+  updateLastMessage,
 } = chatReducer.actions;
 
 export default chatReducer.reducer;

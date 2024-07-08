@@ -5,6 +5,7 @@ import {
   Stack,
   TextField,
   Typography,
+  Box,
 } from '@mui/material';
 import { IoEllipsisVerticalCircle } from 'react-icons/io5';
 import { CiEdit, CiSearch } from 'react-icons/ci';
@@ -45,7 +46,7 @@ const UserProfile = () => {
   }, []);
 
   return (
-    <Paper elevation={1} sx={{ p: 2 }}>
+    <Box sx={{ width: '25vw' }}>
       <Stack
         direction='row'
         justifyContent='space-between'
@@ -76,20 +77,21 @@ const UserProfile = () => {
       />
       <Stack sx={{ mt: 4 }} spacing={4}>
         <ActivePeople key={user.id} activeUser={activeUser} />
-
-        {chatList.friends && chatList.friends.length > 0 ? (
-          chatList.friends.map((friend) => (
-            <div
-              key={friend.fndInfo._id}
-              onClick={() => dispatch(setCurrentFriend(friend.fndInfo))}>
-              <ChatList friend={friend} />
-            </div>
-          ))
-        ) : (
-          <></>
-        )}
+        <Box sx={{ height: '500px', overflowY: 'auto' }}>
+          {chatList.friends && chatList.friends.length > 0 ? (
+            chatList.friends.map((friend) => (
+              <div
+                key={friend.fndInfo._id}
+                onClick={() => dispatch(setCurrentFriend(friend.fndInfo))}>
+                <ChatList friend={friend} />
+              </div>
+            ))
+          ) : (
+            <></>
+          )}
+        </Box>
       </Stack>
-    </Paper>
+    </Box>
   );
 };
 
