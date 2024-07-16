@@ -79,13 +79,15 @@ const UserProfile = () => {
         <ActivePeople key={user.id} activeUser={activeUser} />
         <Box sx={{ height: '500px', overflowY: 'auto' }}>
           {chatList.friends && chatList.friends.length > 0 ? (
-            chatList.friends.map((friend) => (
-              <div
-                key={friend.fndInfo._id}
-                onClick={() => dispatch(setCurrentFriend(friend.fndInfo))}>
-                <ChatList friend={friend} />
-              </div>
-            ))
+            <Stack spacing={3}>
+              {chatList.friends.map((friend) => (
+                <Box
+                  key={friend.fndInfo._id}
+                  onClick={() => dispatch(setCurrentFriend(friend.fndInfo))}>
+                  <ChatList friend={friend} />
+                </Box>
+              ))}
+            </Stack>
           ) : (
             <></>
           )}

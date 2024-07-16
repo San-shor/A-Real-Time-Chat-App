@@ -6,6 +6,19 @@ import { FaCircleCheck } from 'react-icons/fa6';
 const ChatList = ({ friend }) => {
   const { user } = useSelector((state) => state.auth);
 
+  const formatDate = (date) => {
+    const now = moment();
+    const diff = now.diff(moment(date), 'days');
+
+    if (diff === 0) {
+      return moment(date).format('h:mm A');
+    } else if (diff === 1) {
+      return 'Yesterday';
+    } else {
+      return moment(date).format('D/MM/YYYY');
+    }
+  };
+
   return (
     <Stack
       sx={{
@@ -28,11 +41,6 @@ const ChatList = ({ friend }) => {
               : friend.msgInfo && friend.msgInfo.message.image
               ? 'Sent an image'
               : 'Connect with you'}
-          </Typography>
-          <Typography variant='caption' color='textSecondary'>
-            {friend.msgInfo
-              ? moment(friend.msgInfo.createdAt).startOf('minute').fromNow()
-              : moment(friend.fndInfo.createdAt).startOf('minute').fromNow()}
           </Typography>
         </Box>
         {user.id === friend.msgInfo?.senderId ? (
@@ -62,6 +70,11 @@ const ChatList = ({ friend }) => {
               backgroundColor: 'blue',
             }}></Box>
         )}
+        <Typography variant='caption' color='textSecondary'>
+          {friend.msgInfo
+            ? formatDate(friend.msgInfo.createdAt)
+            : formatDate(friend.fndInfo.createdAt)}
+        </Typography>
       </Stack>
     </Stack>
   );

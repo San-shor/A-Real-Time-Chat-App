@@ -1,13 +1,12 @@
-import { Container, Grid, Box } from '@mui/material';
+import { Container, Stack } from '@mui/material';
 import UserProfile from './components/UserProfile';
-import ChatHeader from './components/ChatHeader';
-import Chat from './components/Chat';
-import MessageSend from './components/MessageSend';
+
 import { useSelector } from 'react-redux';
 import { useEffect } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 import useSound from 'use-sound';
 import notification from '../../assets/audio/notification.mp3';
+import ChatContainer from './ChatContainer';
 
 const ChatView = () => {
   const { messages, currentFriend } = useSelector((state) => state.chat);
@@ -36,20 +35,11 @@ const ChatView = () => {
           },
         }}
       />
-      <Grid container spacing={10}>
-        <Grid item md={4}>
-          <UserProfile />
-        </Grid>
-        <Grid item md={8}>
-          <Box sx={{ width: '50vw' }}>
-            <ChatHeader />
+      <Stack flexDirection={'row'} gap={10}>
+        <UserProfile />
 
-            <Chat />
-
-            <MessageSend />
-          </Box>
-        </Grid>
-      </Grid>
+        <ChatContainer />
+      </Stack>
     </Container>
   );
 };
